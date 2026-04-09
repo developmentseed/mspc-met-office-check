@@ -1,20 +1,61 @@
+import asyncio
 import datetime
+import json
 import urllib.parse
+from asyncio import TaskGroup
+from collections import defaultdict
 from pathlib import Path
 from typing import Annotated
 
+import tqdm
 from httpx import Client
 from obstore.store import AzureStore
 from typer import Argument, Exit, Option, Typer
 
-from . import aws, azure
+from . import aws
+from .check import write_parquet
 from .model import Model
 
 app = Typer()
 
 
 @app.command()
-def reference_datetime(
+def check_all(
+    model: Annotated[
+        Model,
+        Argument(
+            help="Model to check",
+        ),
+    ],
+    directory: Annotated[
+        Path,
+        Argument(
+            help="The data directory. If not provided, defaults to data",
+        ),
+    ] = Path("data"),
+    output: Annotated[
+        Path,
+        Argument(
+            help="The output parquet file. If not provided, defaults to check.parquet",
+        ),
+    ] = Path("check.parquet"),
+) -> None:
+    """Check all reference datetimes."""
+    if not directory.exists():
+        print(f"{directory} does not exist")
+        raise Exit(1)
+
+    store = aws.Store(model)
+    results = asyncio.run(store.check_all(directory))
+    if not results:
+        print("✅ Check ok!")
+    else:
+        write_parquet(results, output)
+        print(f"Output written to {output}")
+
+
+@app.command()
+def check(
     model: Annotated[
         Model,
         Argument(
@@ -36,36 +77,36 @@ def reference_datetime(
             help="The data directory. If not provided, defaults to data",
         ),
     ] = Path("data"),
+    output: Annotated[
+        Path,
+        Argument(
+            help="The output parquet file. If not provided, defaults to check.parquet",
+        ),
+    ] = Path("check.parquet"),
 ) -> None:
     """Check a single reference datetime"""
     if not directory.exists():
         print(f"{directory} does not exist")
-        Exit(1)
-
+        raise Exit(1)
     if reference_datetime is None:
         reference_datetime = datetime.datetime.combine(
             datetime.date.today() - datetime.timedelta(days=1),
             datetime.time(0, tzinfo=datetime.timezone.utc),
         )
-    file_names = set(aws.get_file_names(model, reference_datetime))
-    print(f"Found {len(file_names)} {model} files in AWS at {reference_datetime}")
 
-    items = azure.get_items(directory, model, reference_datetime)
-    print(
-        f"Found {len(items)} {model} items in Azure (via stac-geoparquet in {directory}) at {reference_datetime}"
-    )
-
-    extra = set()
-    for item in items:
-        for asset in item.assets.values():
-            file_name = asset.href.rsplit("/", 1)[1]
-            if file_name.endswith(".nc"):
-                try:
-                    file_names.remove(file_name)
-                except KeyError:
-                    extra.add(file_name)
-    print(f"{len(file_names)} in AWS but not in Azure")
-    print(f"{len(extra)} in Azure but not in AWS")
+    store = aws.Store(model)
+    result = asyncio.run(store.check(reference_datetime, directory))
+    if not result:
+        print(f"⚠️  No STAC items found for model {model} at {reference_datetime}")
+    elif result.is_ok():
+        print("✅ Check ok!")
+    else:
+        if result.missing:
+            print(f"❌ {len(result.missing)} missing files")
+        if result.extra:
+            print(f"❌ {len(result.extra)} extra files")
+        write_parquet([result], output)
+        print(f"Output written to {output}")
 
 
 @app.command()
@@ -109,7 +150,7 @@ def download_stac_geoparquet(
             sas_key=sas_key,
         )
         for list_result in store.list(asset_href.path):
-            for object in list_result:
+            for object in tqdm.tqdm(list_result, desc=asset_href.path):
                 path = directory / object["path"]
                 path.parent.mkdir(parents=True, exist_ok=True)
                 with open(path, "wb") as f:
