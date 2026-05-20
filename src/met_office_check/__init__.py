@@ -118,6 +118,7 @@ def download_stac_geoparquet(
         .raise_for_status()
         .json()
     )
+    directory.mkdir(parents=True, exist_ok=True)
     for collection in collections["collections"]:
         if not collection["id"].startswith(f"met-office-{model}"):
             continue
@@ -136,8 +137,6 @@ def download_stac_geoparquet(
             container_name=asset_href.netloc,
             sas_key=sas_key,
         )
-        directory.mkdir(parents=True, exist_ok=True)
-        path = directory / asset_href.path.split("/")[-1]
-        print(f"Downloading {asset_href.path} to {path}")
+        path = directory / asset_href.path[1:]
         with open(path, "wb") as f:
             f.write(store.get(asset_href.path).bytes())
