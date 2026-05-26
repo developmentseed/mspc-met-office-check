@@ -136,9 +136,8 @@ def download_stac_geoparquet(
             container_name=asset_href.netloc,
             sas_key=sas_key,
         )
-        for list_result in store.list(asset_href.path):
-            for object in tqdm.tqdm(list_result, desc=asset_href.path):
-                path = directory / object["path"]
-                path.parent.mkdir(parents=True, exist_ok=True)
-                with open(path, "wb") as f:
-                    f.write(store.get(object["path"]).bytes())
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / asset_href.path.split("/")[-1]
+        print(f"Downloading {asset_href.path} to {path}")
+        with open(path, "wb") as f:
+            f.write(store.get(asset_href.path).bytes())
