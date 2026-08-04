@@ -14,21 +14,12 @@ def get_items(
     return [
         Item.from_dict(item)
         for item in client.search(
-            str(directory.resolve()),
+            str(directory.resolve() / f"met-office-{model}-deterministic-*.parquet"),
             filter={
-                "op": "and",
+                "op": "=",
                 "args": [
-                    {
-                        "op": "=",
-                        "args": [{"property": "met_office_deterministic:model"}, model],
-                    },
-                    {
-                        "op": "=",
-                        "args": [
-                            {"property": "forecast:reference_datetime"},
-                            reference_datetime.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                        ],
-                    },
+                    {"property": "forecast:reference_datetime"},
+                    reference_datetime.strftime("%Y-%m-%dT%H:%M:%SZ"),
                 ],
             },
         )
