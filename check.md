@@ -139,23 +139,7 @@ monthly
       <td>...</td>
     </tr>
     <tr>
-      <th>84</th>
-      <td>met-office-global-deterministic-whole-atmosphere</td>
-      <td>2026-02-01</td>
-      <td>64.0</td>
-      <td>180.0</td>
-      <td>8100.0</td>
-    </tr>
-    <tr>
-      <th>85</th>
-      <td>met-office-global-deterministic-whole-atmosphere</td>
-      <td>2026-03-01</td>
-      <td>65.0</td>
-      <td>126.0</td>
-      <td>9047.0</td>
-    </tr>
-    <tr>
-      <th>86</th>
+      <th>92</th>
       <td>met-office-global-deterministic-whole-atmosphere</td>
       <td>2026-04-01</td>
       <td>643.0</td>
@@ -163,7 +147,7 @@ monthly
       <td>6533.0</td>
     </tr>
     <tr>
-      <th>87</th>
+      <th>93</th>
       <td>met-office-global-deterministic-whole-atmosphere</td>
       <td>2026-05-01</td>
       <td>85.0</td>
@@ -171,16 +155,32 @@ monthly
       <td>9153.0</td>
     </tr>
     <tr>
-      <th>88</th>
+      <th>94</th>
       <td>met-office-global-deterministic-whole-atmosphere</td>
       <td>2026-06-01</td>
-      <td>91.0</td>
+      <td>339.0</td>
       <td>3.0</td>
-      <td>7505.0</td>
+      <td>8598.0</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>met-office-global-deterministic-whole-atmosphere</td>
+      <td>2026-07-01</td>
+      <td>602.0</td>
+      <td>3.0</td>
+      <td>8537.0</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>met-office-global-deterministic-whole-atmosphere</td>
+      <td>2026-08-01</td>
+      <td>231.0</td>
+      <td>5.0</td>
+      <td>1343.0</td>
     </tr>
   </tbody>
 </table>
-<p>89 rows × 5 columns</p>
+<p>97 rows × 5 columns</p>
 </div>
 
 
@@ -262,31 +262,31 @@ con.sql(r"""
       <th>0</th>
       <td>met-office-global-deterministic-height</td>
       <td>cloud_amount_on_height_levels</td>
-      <td>41982</td>
+      <td>43360</td>
     </tr>
     <tr>
       <th>1</th>
       <td>met-office-global-deterministic-near-surface</td>
-      <td>fog_fraction_at_screen_level</td>
-      <td>27552</td>
+      <td>wind_direction_at_10m</td>
+      <td>2604</td>
     </tr>
     <tr>
       <th>2</th>
       <td>met-office-global-deterministic-near-surface</td>
-      <td>wind_direction_at_10m</td>
-      <td>27496</td>
+      <td>wind_speed_at_10m</td>
+      <td>2604</td>
     </tr>
     <tr>
       <th>3</th>
       <td>met-office-global-deterministic-near-surface</td>
       <td>wind_gust_at_10m</td>
-      <td>27471</td>
+      <td>2590</td>
     </tr>
     <tr>
       <th>4</th>
       <td>met-office-global-deterministic-near-surface</td>
-      <td>snowfall_rate</td>
-      <td>27442</td>
+      <td>snow_depth_water_equivalent</td>
+      <td>2586</td>
     </tr>
     <tr>
       <th>...</th>
@@ -298,31 +298,31 @@ con.sql(r"""
       <th>66</th>
       <td>met-office-global-deterministic-whole-atmosphere</td>
       <td>cloud_amount_of_medium_cloud</td>
-      <td>2471</td>
+      <td>4296</td>
     </tr>
     <tr>
       <th>67</th>
       <td>met-office-global-deterministic-whole-atmosphere</td>
       <td>cloud_amount_of_low_cloud</td>
-      <td>2470</td>
+      <td>4295</td>
     </tr>
     <tr>
       <th>68</th>
       <td>met-office-global-deterministic-whole-atmosphere</td>
       <td>cloud_amount_of_total_cloud</td>
-      <td>2468</td>
+      <td>4293</td>
     </tr>
     <tr>
       <th>69</th>
       <td>met-office-global-deterministic-whole-atmosphere</td>
       <td>cloud_amount_of_total_convective_cloud</td>
-      <td>2465</td>
+      <td>4290</td>
     </tr>
     <tr>
       <th>70</th>
       <td>met-office-global-deterministic-whole-atmosphere</td>
       <td>temperature_at_tropopause</td>
-      <td>2459</td>
+      <td>4282</td>
     </tr>
   </tbody>
 </table>
